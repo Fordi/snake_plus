@@ -100,7 +100,7 @@ voice_t chomp = voice(
     100 // distort
 );
 
-voice_t death = voice(
+voice_t thud = voice(
     0, // attack ms
     0, // decay ms
     100, // sustain %
@@ -131,7 +131,7 @@ void update_playing(uint32_t tick) {
         || snake.collides(next)
     ) {
         state = GAME_OVER;
-        play(death, 50, 250, 100);
+        play(thud, 50, 250, 100);
         return;
     }
     bool ateApple = apple.collides(next);
@@ -152,7 +152,7 @@ void update_playing(uint32_t tick) {
             apple.place(pumpkin.pos);
             // Check if it's time to add a pumpkin
             if (!pumpkin.alive && (score % 10) == 0) {
-                play(death, 50, 250, 100);
+                play(thud, 50, 250, 100);
                 pumpkin.place(apple.pos);
             }
         }
