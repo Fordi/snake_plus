@@ -1,7 +1,7 @@
 #include "./snake.hpp"
 #include "hardware/pwm.h"
 #include "picosystem.hpp"
-#include "../assets/snakesheet_ids.hpp"
+#include "../snakesheet_ids.hpp"
 
 using namespace picosystem;
 

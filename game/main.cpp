@@ -8,7 +8,7 @@ using namespace picosystem;
 #include "game_objects/apple.hpp"
 #include "game_objects/hud.hpp"
 #include "assets/snakesheet.hpp"
-#include "assets/snakesheet_ids.hpp"
+#include "snakesheet_ids.hpp"
 
 // Game state
 state_t state = PLAYING;
