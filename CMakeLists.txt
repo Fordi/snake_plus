@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.13)
 
 include(pico-sdk/pico_sdk_init.cmake)
 
-project(games)
+project(game)
+
+pico_sdk_init()
 
 include(picosystem/picosystem-config.cmake)
 
-add_subdirectory(games)
+add_subdirectory(game)

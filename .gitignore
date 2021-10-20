@@ -34,3 +34,6 @@
 # Project stuff
 **/build
 .vscode
+
+.DS_Store
+tools/node_modules
