@@ -1,7 +1,6 @@
 # Snake+
 
-This is a quick and dirty boilerplate repo to get you started quickly developing games for the PicoSystem.
-
+Derived from the PicoSystem snake example, it's enhanced with sprites, sounds, structure, and pumpkins!
 ## Building
 
 1. Install the tool chain.
