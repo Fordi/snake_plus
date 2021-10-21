@@ -90,6 +90,7 @@ uint32_t snake_t::get_body_sprite(uint32_t index) {
     if (CORNER(1, 1, dp, np)) {
         return part.full ? BODY_SW_FULL : BODY_SW;
     }
+    return BLANK1;
 }
 
 uint32_t snake_t::get_tail_sprite() {

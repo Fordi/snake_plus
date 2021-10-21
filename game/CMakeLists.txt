@@ -11,6 +11,8 @@ picosystem_executable(
   game_objects/snake.cpp
   game_objects/apple.cpp
   game_objects/hud.cpp
+  scenes/OpeningScene.cpp
+  scenes/PlayingScene.cpp
 )
 
 pixel_double(game)

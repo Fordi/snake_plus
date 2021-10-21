@@ -35,6 +35,7 @@ const pragmaName = basename(outputFile).toUpperCase().replace(/\W+/g, '_');
         `#ifndef ${pragmaName}`,
         `#define ${pragmaName}`,
         '#include "picosystem.hpp"',
+        'using namespace picosystem;',
         `const color_t _sheet_${varName}[${width * height}] = {`
     );
     
