@@ -1,32 +1,38 @@
 #!/usr/bin/env node
 const getPixels = require('get-pixels');
+const glob = require('glob');
 const { basename } = require('path');
 const { writeFile } = require('fs/promises');
 
 const pixels = async src => new Promise((resolve, reject) => {
     getPixels(src, (err, pixels) => {
         if (err) return reject(err);
-        return resolve(pixels);
+        resolve(pixels);
+    });
+});
+
+const find = async pattern => new Promise((resolve, reject) => {
+    glob(pattern, (err, files) => {
+        if (err) return reject(err);
+        resolve(files);
     });
 });
 
 const spriteSize = [8, 8];
 
 
-const inputFile = process.argv[2];
-if (!inputFile) {
+const inputPattern = process.argv[2];
+if (!inputPattern) {
     console.error(`Usage: ${basename(process.argv[1])} [imageFile]`);
     console.log('Converts an image file to a 16-bit RGBA/4444 little-endian array of words in an C++ header file');
     console.log('You can enable the sheet using `use_{filename-sans-extension}()`.');
     console.log('e.g., for `mysptires.png`, you\'ll have a `use_mysprites()` function');
     process.exit(-1);
 }
-const outputFile = `${inputFile.replace(/\.[^\.]+$/, '')}.hpp`;
-const varName = basename(outputFile, '.hpp').toLowerCase();
-const pragmaName = basename(outputFile).toUpperCase().replace(/\W+/g, '_');
-
-
-(async () => {
+const processInput = async inputFile => {
+    const outputFile = `${inputFile.replace(/\.[^\.]+$/, '')}.hpp`;
+    const varName = basename(outputFile, '.hpp').toLowerCase();
+    const pragmaName = basename(outputFile).toUpperCase().replace(/\W+/g, '_');
     const buf = [];
     const px = await pixels(inputFile);
     const [width, height] = px.shape;
@@ -71,4 +77,11 @@ const pragmaName = basename(outputFile).toUpperCase().replace(/\W+/g, '_');
         ''
     );
     await writeFile(outputFile, buf.join('\n'), { encoding: 'utf8' });
+};
+
+(async () => {
+    const files = await find(inputPattern);
+    for (let i = 0; i < files.length; i++) {
+        await processInput(files[i]);
+    }
 })();
