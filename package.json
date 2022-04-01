@@ -1,0 +1,16 @@
+{
+  "name": "snake-plus",
+  "version": "0.0.0",
+  "description": "Snake+ game",
+  "browser": "src/index.html",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "chokidar": "^3.5.2",
+    "express": "^4.17.1",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.24.2"    
+  }
+}

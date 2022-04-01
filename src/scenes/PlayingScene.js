@@ -1,6 +1,14 @@
-#include "picosystem.hpp"
-
-using namespace picosystem;
+import {
+  loadImage,
+  backlight,
+  spritesheet,
+  pen,
+  text,
+  backlight,
+  sprite,
+  clear,
+  pressed,
+} from '../lib/picolike.js';
 
 #include "../state.hpp"
 #include "../game_objects/board.hpp"
