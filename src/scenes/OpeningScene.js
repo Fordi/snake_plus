@@ -1,56 +1,59 @@
-let timer = 0;
-let state = 'FADING_IN';
-let game = null;
+export default async ({
+  backlight,
+  spritesheet,
+  loadImage,
+  pressed,
+  setState,
+  pen,
+  text,
+  sprite,
+  clear,
+}) => {
+  let timer = 0;
+  let state = 'FADING_IN';
+  let openingScreen = await loadImage('./assets/opening.png');
 
-export const init = async (g) => {
-  game = g;
-  const { backlight, spritesheet, loadImage } = game;
-  backlight(0);
-  timer = 0;
-  state = 'FADING_IN';
-  spritesheet(await loadImage('./assets/opening.png'));
-};
+  const init = () => {
+    backlight(0);
+    timer = 0;
+    state = 'FADING_IN';
+    spritesheet(openingScreen);
+  };
 
-export const update = (tick) => {
-  const { pressed, setState } = game;
-  if (state === 'FADING_IN') {
-    timer++;
-  }
-  if (timer === 75) {
-    state = 'HOLDING';
-  }
-  if (pressed('A')) {
-    state = 'FADING_OUT';
-  }
-  if (state === 'FADING_OUT') {
-    timer--;
-    if (timer == -15) {
-      setState('PlayingScene');
+  const update = (tick) => {
+    if (state === 'FADING_IN') {
+      timer++;
     }
-  }
-};
-
-export const draw = (tick) => {
-  const {
-    backlight,
-    pen,
-    text,
-    sprite,
-    clear,
-  } = game;
-  pen(0, 0, 0);
-  clear();
-  if (!(state == 'FADING_OUT' && timer <= 0)) {
-    for (let i = 0; i < 225; i++) {
-      let x = (i % 15) * 8;
-      let y = Math.floor(i / 15) * 8;
-      sprite(i, x, y);
+    if (timer === 75) {
+      state = 'HOLDING';
     }
-    pen(15, 15, 15, 15);
-    text("Press A to start", 0, 0);
-  }
-  if (state == 'FADING_IN' || state == 'FADING_OUT') {
-    backlight(timer < 0 ? 0 : timer);
-  }
-};
+    if (pressed('A')) {
+      state = 'FADING_OUT';
+    }
+    if (state === 'FADING_OUT') {
+      timer--;
+      if (timer == -15) {
+        setState('PlayingScene');
+      }
+    }
+  };
 
+  const draw = (tick) => {
+    pen(0, 0, 0);
+    clear();
+    if (!(state == 'FADING_OUT' && timer <= 0)) {
+      for (let i = 0; i < 225; i++) {
+        let x = (i % 15) * 8;
+        let y = Math.floor(i / 15) * 8;
+        sprite(i, x, y);
+      }
+      pen(15, 15, 15, 15);
+      text("Press A to start", 0, 0);
+    }
+    if (state == 'FADING_IN' || state == 'FADING_OUT') {
+      backlight(timer < 0 ? 0 : timer);
+    }
+  };
+
+  return { init, update, draw };
+};

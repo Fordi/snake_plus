@@ -1,7 +1,11 @@
 import Game from './Game.js';
-
+const canvas = Object.assign(document.createElement('canvas'), {
+    width: 120,
+    height: 120,
+});
+document.body.appendChild(canvas);
 const game = Game(
-    document.querySelector('#game'),
+    canvas,
     {
         opening: () => import('./scenes/OpeningScene.js'),
         playing: () => import('./scenes/PlayingScene.js'),

@@ -97,8 +97,8 @@ export default (canvas, scenes) => {
 
     const setScene = async (name) => {
         game.currentScene?.teardown?.();
-        game.currentScene = await (await scenes[name]());
-        await game.currentScene?.init?.(game);
+        game.currentScene = await (await scenes[name]()).default(game);
+        await game.currentScene?.init?.();
     };
     let running = false;
     const stop = () => {

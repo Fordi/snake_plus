@@ -1,54 +1,52 @@
-#include "./snake.hpp"
-#include "hardware/pwm.h"
-#include "picosystem.hpp"
-#include "../snakesheet_ids.hpp"
+import Vector from '../Vector.js';
+import s from '../snakesheet.js';
 
-using namespace picosystem;
 
-vec_t snake_t::next() {
-    return {
-        .x = body[0].pos.x + newdir.x,
-        .y = body[0].pos.y + newdir.y
-    };
-}
-
-void snake_t::advance(bool ate) {
-    // Insert the next position into the head
-    part_t head { .pos = next(), .full = ate };
-    body.insert(body.begin(), head);
-    dir.x = newdir.x;
-    dir.y = newdir.y;
-
-    // If we're now longer than our length, drop the last segment
-    if (body.size() > length) {
-        body.pop_back();
+export default class Snake {
+    constructor() {
+        this.pos = [];
+        this.full = false;
+        this.dir = new Vector(0, 0);
+        this.newDir = new Vector(0, 0);
+        this.length = 1;
+        this.body = [new Vector(0, 0)];
     }
-}
-
-bool snake_t::collides(vec_t other) {
-    // Loop through all the segments; skip the tail
-    // Raasoning: collision detection is done before the tail
-    // is pushed off the stack.
-    for (uint32_t i = 0; i < body.size() - 1; i++) {
-        // If any segment is equal to other, there's a collision
-        if (body[i].pos.equals(other)) {
-            return true;
+    next() {
+        const { body, newDir } = this;
+        return new Vector(
+            body[0].x + newDir.x,
+            body[0].y + newDir.y,
+        );
+    }
+    advance(full) {
+        const head = Object.assign(this.next(), { full });
+        this.body.unshift(head);
+        this.dir = new Vector(...this.newDir);
+        if (this.body.length > this.length) {
+            this.body.pop();
         }
     }
-    return false;
-}
-
-uint32_t snake_t::get_head_sprite(bool open) {
-    if (dir.y == 0) {
-        if (dir.x == 1) {
-            return open ? HEAD_RIGHT_OPEN : HEAD_RIGHT;
+    collides(other) {
+        // Loop through all the segments; skip the tail
+        // Raasoning: collision detection is done before the tail
+        // is popped off the stack.
+        return this.body.slice(0, this.body.length - 1).reduce((collided, part) => {
+            return collided || part.collides(other);
+        }, false);
+    }
+    getHeadSprite(open) {
+        const { dir } = this;
+        if (dir.y == 0) {
+            if (dir.x == 1) {
+                return open ? s.HEAD_RIGHT_OPEN : s.HEAD_RIGHT;
+            }
+            return open ? s.HEAD_LEFT_OPEN : s.HEAD_LEFT;
         }
-        return open ? HEAD_LEFT_OPEN : HEAD_LEFT;
+        if (dir.y == 1) {
+            return open ? s.HEAD_DOWN_OPEN : s.HEAD_DOWN;
+        }
+        return open ? s.HEAD_UP_OPEN : s.HEAD_UP;                    
     }
-    if (dir.y == 1) {
-        return open ? HEAD_DOWN_OPEN : HEAD_DOWN;
-    }
-    return open ? HEAD_UP_OPEN : HEAD_UP;
 }
 
 #define CORNER(h, v, p, n) (p.x == h && p.y == 0 && n.x == 0 && n.y == v) || (p.x == 0 && p.y == -(v) && n.x == -(h) && n.y == 0)
