@@ -1,23 +1,27 @@
+import Font from '../Font.js';
+
 export default async ({
-  backlight,
-  spritesheet,
   loadImage,
+  canvas,
+  context,
   pressed,
-  setState,
-  pen,
-  text,
-  sprite,
-  clear,
+  setScene,
 }) => {
   let timer = 0;
   let state = 'FADING_IN';
-  let openingScreen = await loadImage('./assets/opening.png');
+  let [
+    openingScreen,
+    arcadeFontSheet,
+  ] = await Promise.all([
+      loadImage('./assets/opening.png'),
+      loadImage('./assets/text.png'),
+  ]);
+  const font = Font(arcadeFontSheet, 8, 8, ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~␡');
 
   const init = () => {
-    backlight(0);
+    canvas.style.opacity = 0;
     timer = 0;
     state = 'FADING_IN';
-    spritesheet(openingScreen);
   };
 
   const update = (tick) => {
@@ -27,31 +31,27 @@ export default async ({
     if (timer === 75) {
       state = 'HOLDING';
     }
-    if (pressed('A')) {
+    if (pressed('a')) {
       state = 'FADING_OUT';
     }
     if (state === 'FADING_OUT') {
       timer--;
       if (timer == -15) {
-        setState('PlayingScene');
+        setScene('playing');
       }
     }
   };
 
   const draw = (tick) => {
-    pen(0, 0, 0);
-    clear();
+    context.fillColor = `#000`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(openingScreen, 0, 0, openingScreen.width, openingScreen.height);
+
     if (!(state == 'FADING_OUT' && timer <= 0)) {
-      for (let i = 0; i < 225; i++) {
-        let x = (i % 15) * 8;
-        let y = Math.floor(i / 15) * 8;
-        sprite(i, x, y);
-      }
-      pen(15, 15, 15, 15);
-      text("Press A to start", 0, 0);
+      font.draw(context, 'Press A', 4, 4);
     }
     if (state == 'FADING_IN' || state == 'FADING_OUT') {
-      backlight(timer < 0 ? 0 : timer);
+      canvas.style.opacity = timer < 0 ? 0 : (timer / 15);
     }
   };
 
